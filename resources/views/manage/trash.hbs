@@ -1,0 +1,81 @@
+<h1>PRODUCT LIST</h1>
+
+<div class="row mt-4">
+	{{#each shoes}}
+		<div class="col-sm-6 col-lg-4">
+			<div class="card">
+				<div class="card-body">
+
+					<img src="./../../{{this.image}}" alt="" width="100px" height="100px">
+
+					<a href="/shoes/{{this.slug}}" class="slug">
+						<h5 class="card-title">{{this.name}}</h5>
+					</a>
+					<p class="card-text">{{this.price}}</p>
+					<p class="card-text">{{this.description}}</p>
+					
+					<a href="" class="btn btn-warning btn-restore" data-id="{{this._id}}">Restore</a>
+					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="{{this._id}}">Delete</button>
+				</div>
+			</div>
+		</div>
+	{{/each}}
+</div>
+
+<form method="POST" name="form-delete"></form>
+<form method="POST" name="form-restore"></form>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Do you want to delete this product? 
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger delete_btn">Delete</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function(){
+		var exampleModal = document.getElementById('exampleModal')
+		var formRestore = document.forms['form-restore']
+		var formDelete = document.forms['form-delete']
+		var deleteBtn = document.querySelector('.delete_btn')
+		var restore = $('.btn-restore')
+		var id;
+
+		exampleModal.addEventListener('show.bs.modal', function (event) {
+			
+			var button = event.relatedTarget
+			id = button.getAttribute('data-id')
+
+		})
+
+		deleteBtn.onclick = function(){
+			formDelete.action = '/shoes/' + id + '/force?_method=DELETE';
+			formDelete.submit();
+		}
+
+		restore.click(function(e){
+			e.preventDefault()
+
+			var shoeId = $(this).data('id')
+			console.log(shoeId)
+			formRestore.action = '/shoes/' + shoeId + '/restore?_method=PATCH';
+			formRestore.submit();
+		})
+
+	})
+
+</script>
+
